@@ -18,7 +18,7 @@
         <div class="min-h-screen flex flex-col sm:justify-center items-center pt-6 sm:pt-0 bg-gray-100 dark:bg-gray-900">
             <div>
                 <a href="/">
-                 <img width="100px" height="100px" src="https://w7.pngwing.com/pngs/88/620/png-transparent-pharmacy-logo-rounded-shape.png" alt="logo">
+                 <img width="150px" height="150px" src="/assets/logo/pharmacy_logo.png" alt="logo">
                 </a>
             </div>
 

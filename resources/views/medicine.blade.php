@@ -30,7 +30,7 @@
                             </div>
                             <div class="p-5">
                                 <h1 class="text-2xl text-white font-semibold">Supplier Name:</h1>
-                                <p class="text-white text-xl">{{ $medicine->supplier_name }}</p>
+                                <p class="text-white text-xl">{{ $medicine->supplier->name }}</p>
                             </div>
                             <div class="p-5">
                                 <h1 class="text-2xl text-white font-semibold">Created At:</h1>

@@ -10,6 +10,7 @@
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.bunny.net">
     <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
+    <link rel="shortcut icon" href="{{ asset('assets/logo/pharmacy_logo.png') }}" type="image/x-icon">
 
     <!-- Styles / Scripts -->
     @if (file_exists(public_path('build/manifest.json')) || file_exists(public_path('hot')))
@@ -910,7 +911,9 @@
     <header class="bg-white dark:bg-gray-800 p-4">
         @if (Route::has('login'))
             <nav class="flex items-center justify-between">
-                <div class="text-white font-semibold">Hello wordl</div>
+                <div class="text-white font-semibold">
+                    <img width="40px" height="40px" src="/assets/logo/pharmacy_logo.png" alt="logo">
+                </div>
                 <div class="flex items-center">
                       @auth
                     @php
@@ -959,11 +962,11 @@
     <main class="w-full h-full">
         <div class="w-full h-full p-10">
             <div class="bg-white">
-                @auth
+                {{-- @auth
                     <p>User is authenticated</p>
                 @else
                     <p>User is not authenticated</p>
-                @endauth
+                @endauth --}}
                 <div class="relative isolate px-6 lg:px-8">
                     <div class="mx-auto max-w-2xl py-20 sm:py-18 lg:py-36">
                         <div class="text-center">

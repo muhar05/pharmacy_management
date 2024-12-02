@@ -12,13 +12,19 @@ class Medicine extends Model
 
     protected $fillable = [
         'name',
-        'category',
         'stock',
         'price',
+        'category_id',
         'type',
         'description',
         'supplier_name',
+        'supplier_id',
+        'dosage',
+        'instructions',
+        'unit',
+        'minimum_stock',
         'expiry_date',
+        'require_prescription'
     ];
 
     protected $with = ['salesDetails', 'restocks'];
@@ -31,6 +37,16 @@ class Medicine extends Model
     public function restocks()
     {
         return $this->hasMany(Restock::class);
+    }
+
+    public function category()
+    {
+        return $this->belongsTo(Category::class);
+    }
+
+    public function supplier()
+    {
+        return $this->belongsTo(Supplier::class);
     }
 
     // Accessor untuk memformat harga
