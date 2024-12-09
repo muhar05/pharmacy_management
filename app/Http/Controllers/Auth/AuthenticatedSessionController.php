@@ -27,9 +27,8 @@ class AuthenticatedSessionController extends Controller
         $request->authenticate();
 
         $user = $request->user();
-        $employee = $user->employee; // Ambil relasi employee
 
-        if ($employee && in_array($employee->position, ['admin', 'pharmacist', 'cashier', 'inventory_manager'])) {
+        if ($user && in_array($user->position, ['admin', 'pharmacist', 'cashier', 'inventory_manager'])) {
             $request->session()->regenerate();
 
             return redirect()->route('dashboard');

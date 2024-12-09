@@ -39,38 +39,46 @@
                         </div>
                         <div class="w-full bg-slate-800 mt-10 rounded-lg">
                             <div class="w-full flex p-5 justify-start items-center gap-6">
-                                <button class="p-3 bg-slate-900 rounded-lg">Daily</button>
-                                <button>Weekly</button>
-                                <button>Montly</button>
+                                <form action="{{ route('dashboard') }}" method="GET" class="flex gap-2">
+                                    <button name="period" value="daily"
+                                        class="p-3 {{ $period === 'daily' ? 'bg-slate-900' : 'bg-slate-700' }} rounded-lg">Daily</button>
+                                    <button name="period" value="weekly"
+                                        class="p-3 {{ $period === 'weekly' ? 'bg-slate-900' : 'bg-slate-700' }} rounded-lg">Weekly</button>
+                                    <button name="period" value="monthly"
+                                        class="p-3 {{ $period === 'monthly' ? 'bg-slate-900' : 'bg-slate-700' }} rounded-lg">Monthly</button>
+                                </form>
                             </div>
                             <div class="w-full p-6 grid grid-cols-2 gap-5 justify-center items-center text-center">
                                 <div class="w-full flex flex-col justify-between col-span-2">
                                     <h1 class="font-semibold text-xl">Sum of Sales : </h1>
-                                    <h2 class="font-semibold text-3xl">Rp. 2.000.000</h2>
+                                    <h2 class="font-semibold text-3xl">
+                                        {{ $totalSales }}</h2>
                                 </div>
                                 <div class="w-full flex flex-col justify-between">
                                     <h1 class="font-semibold text-xl">Transaction : </h1>
-                                    <h2 class="font-semibold text-3xl">50</h2>
+                                    <h2 class="font-semibold text-3xl">{{ $transactionCount }}</h2>
                                 </div>
                                 <div class="w-full flex flex-col justify-between">
                                     <h1 class="font-semibold text-xl">Best Seller : </h1>
-                                    <h2 class="font-semibold text-3xl">Paracetamol</h2>
+                                    <h2 class="font-semibold text-3xl">{{ $bestSeller }}</h2>
                                 </div>
                             </div>
                         </div>
-                        <div class="w-full mt-10 flex justify-center gap-5 items-center">
-                            <div class="w-full p-4 bg-slate-800 rounded-lg">
+                        <div class="w-full mt-10 flex justify-center gap-5 items-star">
+                            <div class="w-full p-4 bg-slate-800 rounded-lg flex-1">
                                 <h1 class="font-semibold text-lg">Stok Rendah</h1>
-                                <ul class="list-disc p-2">
-                                    <li>Paracetamol</li>
-                                    <li>Aspirin</li>
+                                <ul class="grid grid-cols-3 gap-4 p-2 list-disc">
+                                    @foreach ($lowStockMedicines as $medicine)
+                                        <li>{{ $medicine->name }} (Stock: {{ $medicine->stock }})</li>
+                                    @endforeach
                                 </ul>
                             </div>
-                            <div class="w-full p-4 bg-slate-800 rounded-lg">
+                            <div class="w-full p-4 bg-slate-800 rounded-lg flex-1">
                                 <h1 class="font-semibold text-lg">Kadaluarsa dalam 30 hari</h1>
-                                <ul class="list-disc p-2">
-                                    <li>Vitamin C (Exp: 2024-12-01)</li>
-                                    <li>Aspirin</li>
+                                <ul class="grid grid-cols-3 gap-4 p-2 list-disc">
+                                    @foreach ($expiringMedicines as $medicine)
+                                        <li>{{ $medicine->name }} (Exp: {{ $medicine->formatted_expiry_date }})</li>
+                                    @endforeach
                                 </ul>
                             </div>
                         </div>
@@ -79,4 +87,37 @@
             </div>
         </div>
     </div>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            $('button[name="period"]').on('click', function(e) {
+                e.preventDefault(); // Mencegah form dari submit biasa
+
+                var period = $(this).val(); // Ambil nilai periode yang dipilih
+
+                // Hapus kelas aktif dari semua tombol
+                $('button[name="period"]').removeClass('bg-slate-900').addClass('bg-slate-700');
+
+                // Tambahkan kelas aktif pada tombol yang diklik
+                $(this).removeClass('bg-slate-700').addClass('bg-slate-900');
+
+                $.ajax({
+                    url: '{{ route('dashboard') }}',
+                    method: 'GET',
+                    data: {
+                        period: period
+                    },
+                    success: function(data) {
+                        // Update konten dengan data yang diterima
+                        $('#totalSales').text(data.totalSales);
+                        $('#transactionCount').text(data.transactionCount);
+                        $('#bestSeller').text(data.bestSeller);
+                    },
+                    error: function(xhr) {
+                        console.error(xhr);
+                    }
+                });
+            });
+        });
+    </script>
 </x-app-layout>

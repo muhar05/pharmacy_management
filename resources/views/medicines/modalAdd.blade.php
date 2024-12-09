@@ -196,18 +196,5 @@
 
                 console.log(name, supplier_name, category_id, unit, price, minimum_stock, stock, type, dosage, instructions,
                     expiry_date, description);
-
-                // // Send the data using Axios
-                // axios.post('{{ route('medicine.add') }}', formData)
-                //     .then(response => {
-                //         console.log('Success:', response.data);
-                //         // Close the modal or show a success message
-                //         // Example: $dispatch('close');
-                //         alert('Medicine added successfully');
-                //     })
-                //     .catch(error => {
-                //         console.log('Error:', error.response);
-                //         alert('Failed to add medicine');
-                //     });
             }
         </script>

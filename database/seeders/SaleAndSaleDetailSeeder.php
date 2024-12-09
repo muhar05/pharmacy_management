@@ -7,6 +7,7 @@ use App\Models\Employee;
 use App\Models\Medicine;
 use App\Models\Sale;
 use App\Models\SaleDetail;
+use App\Models\User;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
@@ -15,13 +16,12 @@ class SaleAndSaleDetailSeeder extends Seeder
     public function run(): void
     {
         $customers = Customer::all();
-        $employees = Employee::all();
         $medicines = Medicine::all();
 
         foreach (range(1, 20) as $index) {
             $sale = Sale::create([
                 'customer_id' => $customers->random()->id,
-                'employee_id' => $employees->random()->id,
+                'user_id' => User::all()->random()->id, 
                 'sale_date' => now(),
                 'total_amount' => 0, // Akan diperbarui nanti
                 'payment_status' => rand(0, 1) ? 'Paid' : 'Unpaid',

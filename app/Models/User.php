@@ -21,19 +21,12 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
-        'employee_id',
+        'position',
     ];
 
-    // Relasi satu ke satu dengan Employee
-    public function employee(): HasOne
+    public function sales()
     {
-        return $this->hasOne(Employee::class);
-    }
-
-    // Helper untuk mendapatkan posisi user
-    public function getPositionAttribute(): ?string
-    {
-        return $this->employee?->position;
+        return $this->hasMany(Sale::class);
     }
 
     /**

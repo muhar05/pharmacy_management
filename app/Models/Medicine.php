@@ -29,6 +29,8 @@ class Medicine extends Model
 
     protected $with = ['salesDetails', 'restocks'];
 
+     protected $dates = ['expiry_date']; 
+
     public function salesDetails()
     {
         return $this->hasMany(SaleDetail::class);

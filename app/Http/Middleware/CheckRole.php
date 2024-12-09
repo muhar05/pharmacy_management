@@ -11,15 +11,16 @@ class CheckRole
 {
     public function handle(Request $request, Closure $next, ...$positions)
     {
-        $user = Auth::user();
-
-        // Pastikan user sudah login dan memiliki relasi employee
-        if (!$user || !$user->employee) {
-            abort(403, 'Unauthorized or employee data not found.');
+        // Cek jika user belum login
+        if (!$user = Auth::user()) {
+            abort(403, 'Unauthorized data not found.');
         }
 
+        // Ambil posisi user setelah login
+        $userPosition = $user->position;
+
         // Periksa posisi user
-        if (!in_array($user->position, $positions)) {
+        if (!in_array($userPosition, $positions)) {
             abort(403, 'You do not have the required role. Please contact your administrator.');
         }
 

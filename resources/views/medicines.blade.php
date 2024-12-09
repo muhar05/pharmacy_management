@@ -13,7 +13,7 @@
                     <h1 class="text-balance p-4 text-5xl font-semibold tracking-tight text-gray-200 sm:text-3xl">Table of
                         Medicines</h1>
                     <div class="w-full p-4">
-                        <div class="w-full flex justify-end mb-5">
+                        <div class="w-full flex justify-end mb-5 mt-5">
                             <button id="filterDropdownButton" data-dropdown-toggle="filterDropdown"
                                 class="w-full md:w-auto flex items-center justify-center py-2 px-4 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-primary-700 focus:z-10 focus:ring-4 focus:ring-gray-200 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700"
                                 type="button">
@@ -134,7 +134,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="overflow-x-auto">
+                            <div class="overflow-x-auto mb-6">
                                 <table class="w-full h-full text-sm text-left text-gray-500 dark:text-gray-400">
                                     <thead
                                         class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
@@ -255,8 +255,6 @@
                 $('#filterDropdown input[type="checkbox"]:checked').each(function() {
                     selectedCategories.push($(this).val());
                 });
-
-                console.log('Selected categories:', selectedCategories);
 
                 // Jika input pencarian kosong dan tidak ada kategori yang dipilih, kembalikan ke data default
                 if (!query.trim() && selectedCategories.length === 0) {

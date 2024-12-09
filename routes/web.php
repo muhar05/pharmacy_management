@@ -1,8 +1,13 @@
 <?php
 
 use App\Http\Controllers\CartController;
+use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\MedicineController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\SaleController;
+use App\Http\Controllers\SupplierController;
+use App\Http\Controllers\CustomerController;   
+use App\Http\Controllers\UserController; 
 use App\Http\Middleware\CheckRole;
 use App\Models\Customer;
 use App\Models\Employee;
@@ -17,9 +22,9 @@ Route::get('/', function () {
     return view('home');
 });
 
-Route::get('/dashboard', function () {
-    return view('dashboard');
-})->middleware(['auth', 'verified', CheckRole::class . ':admin,pharmacist,cashier,inventory_manager'])->name('dashboard');
+Route::get('/dashboard', [DashboardController::class, 'index'])
+    ->middleware(['auth', 'verified', CheckRole::class . ':admin,pharmacist,cashier,inventory_manager'])
+    ->name('dashboard');
 
 Route::get('/cashier', function () {
     return view('cashier', ['medicines' => Medicine::latest()->get()]);
@@ -45,8 +50,29 @@ Route::get('/medicines/{id}', function ($id) {
 })->middleware(['auth', 'verified', CheckRole::class . ':admin,pharmacist,inventory_manager'])->name('medicine.detail');
 
 Route::get('/sales', function () {
-    return view('sales', ['sales' => Sale::all()]);
+    // Ambil semua data penjualan
+    $sales = Sale::with('customer')->get();
+
+    // Hitung total amount dari semua penjualan
+    $totalSales = $sales->sum('total_amount');
+
+    // Kembalikan view dengan data penjualan dan total penjualan
+    return view('sales', ['sales' => $sales, 'totalSales' => $totalSales]);
 })->middleware(['auth', 'verified', CheckRole::class . ':admin,pharmacist,cashier'])->name('sales');
+
+Route::get('/sales/{id}', function ($id) {
+    // Temukan data sale dengan relasi terkait
+    $sale = Sale::with(['customer', 'saleDetails', 'user'])->find($id);
+
+    if (!$sale) {
+        abort(404);
+    }
+
+    return view('sale', [
+        'title' => 'Detail Sale',
+        'sale' => $sale
+    ]);
+})->middleware(['auth', 'verified', CheckRole::class . ':admin,pharmacist,cashier'])->name('sale.detail');
 
 Route::get('/customers', function () {
     return view('customers', ['customers' => Customer::all()]);
@@ -57,21 +83,30 @@ Route::get('/suppliers', function () {
     return view('suppliers', ['suppliers' => $suppliers]);
 })->middleware(['auth', 'verified', CheckRole::class . ':admin,inventory_manager'])->name('suppliers');
 
-Route::get('/employees', function () {
-    return view('employees', ['employees' => Employee::all()]);
-})->middleware(['auth', 'verified', CheckRole::class . ':admin'])->name('employees');
-
 Route::get('/users', function () {
     return view('users', ['users' => User::all()]);
 })->middleware(['auth', 'verified', CheckRole::class . ':admin'])->name('users');
 
 // Medicine CRUD
-Route::post('/medicines', [MedicineController::class, 'store'])->name('medicine.add')->middleware(['auth', 'verified', CheckRole::class . ':admin,pharmacist,inventory_manager']);  
+Route::post('/medicines', [MedicineController::class, 'store'])->name('medicine.add')->middleware(['auth', 'verified', CheckRole::class . ':admin,pharmacist,inventory_manager']);
 Route::delete('/medicines/{id}', [MedicineController::class, 'destroy'])->name('medicine.delete')->middleware(['auth', 'verified', CheckRole::class . ':admin,pharmacist,inventory_manager']);
 Route::put('/medicines/{id}', [MedicineController::class, 'update'])->name('medicine.update')->middleware(['auth', 'verified', CheckRole::class . ':admin,pharmacist,inventory_manager']);
 Route::post('/medicines/search', [MedicineController::class, 'search'])->name('medicine.search')->middleware(['auth', 'verified', CheckRole::class . ':admin,pharmacist,inventory_manager']);
 
 // sales CRUD
+Route::post('/checkout', [SaleController::class, 'store'])->name('cashier.checkout')->middleware(['auth', 'verified', CheckRole::class . ':admin,pharmacist,cashier']);
+
+// supplier RUD
+Route::put('/suppliers/{id}', [SupplierController::class, 'update'])->name('supplier.update')->middleware(['auth', 'verified', CheckRole::class . ':admin,inventory_manager']);  
+Route::delete('/suppliers/{id}', [SupplierController::class, 'destroy'])->name('supplier.delete')->middleware(['auth', 'verified', CheckRole::class . ':admin,inventory_manager']); 
+
+// customer RUD 
+Route::put('/customers/{id}', [CustomerController::class, 'update'])->name('customer.update')->middleware(['auth', 'verified', CheckRole::class . ':admin,pharmacist,cashier']);    
+Route::delete('/customers/{id}', [CustomerController::class, 'destroy'])->name('customer.delete')->middleware(['auth', 'verified', CheckRole::class . ':admin,pharmacist,cashier']);    
+
+// users RUD
+Route::patch('/users/{id}', [UserController::class, 'update'])->name('user.update')->middleware(['auth', 'verified', CheckRole::class . ':admin']); 
+Route::delete('/users/{id}', [UserController::class, 'destroy'])->name('user.delete')->middleware(['auth', 'verified', CheckRole::class . ':admin']);
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');

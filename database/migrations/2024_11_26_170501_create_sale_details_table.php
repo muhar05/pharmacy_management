@@ -16,8 +16,8 @@ return new class extends Migration
             $table->foreignId('sale_id')->constrained()->onDelete('cascade'); // Relasi ke tabel sales
             $table->foreignId('medicine_id')->constrained()->onDelete('cascade'); // Relasi ke tabel medicines
             $table->integer('quantity'); // Jumlah
-            $table->decimal('price', 10, 2); // Harga per unit
-            $table->decimal('total_price', 10, 2); // Total harga
+            $table->integer('price'); // Harga  
+            $table->integer('total_price'); // Total harga
             $table->timestamps(); // created_at, updated_at
         });
     }

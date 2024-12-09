@@ -1,5 +1,5 @@
 @php
-    $employee = Auth::user()->employee; // Asumsi bahwa relasi antara User dan Employee sudah didefinisikan
+    $user = Auth::user(); 
 @endphp
 
 <nav x-data="{ open: false }" class="bg-white dark:bg-gray-800 border-b border-gray-100 dark:border-gray-700">
@@ -16,8 +16,8 @@
 
                 <!-- Navigation Links -->
                 <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
-                    @if ($employee)
-                        @switch($employee->position)
+                    @if ($user)
+                        @switch($user->position)
                             @case('admin')
                                 <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
                                     {{ __('Dashboard') }}
@@ -144,9 +144,6 @@
             </x-responsive-nav-link>
             <x-responsive-nav-link :href="route('suppliers')" :active="request()->routeIs('suppliers')">
                 {{ __('Suppliers') }}
-            </x-responsive-nav-link>
-            <x-responsive-nav-link :href="route('employees')" :active="request()->routeIs('employees')">
-                {{ __('Employees') }}
             </x-responsive-nav-link>
             <x-responsive-nav-link :href="route('users')" :active="request()->routeIs('users')">
                 {{ __('Users') }}
