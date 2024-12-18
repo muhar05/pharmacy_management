@@ -10,7 +10,7 @@
         <main class="mt-10 w-full h-full">
             <div class="max-w-7xl mx-auto sm:px-4 lg:px-8">
                 <div>
-                    <h1 class="text-balance p-4 text-5xl font-semibold tracking-tight text-gray-200 sm:text-3xl">Table of
+                    <h1 class="text-balance p-4 text-5xl font-semibold tracking-tight dark:text-gray-200 sm:text-3xl">Table of
                         Medicines</h1>
                     <div class="w-full p-4">
                         <div class="w-full flex justify-end mb-5 mt-5">
@@ -89,7 +89,7 @@
                                     class="w-full md:w-auto flex flex-col md:flex-row space-y-2 md:space-y-0 items-stretch md:items-center justify-end md:space-x-3 flex-shrink-0">
                                     <button type="button" x-data=""
                                         x-on:click.prevent="$dispatch('open-modal', 'add-medicine-modal')"
-                                        class="flex items-center justify-center text-white bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:ring-primary-300 font-medium rounded-lg text-sm px-4 py-2 dark:bg-primary-600 dark:hover:bg-primary-700 focus:outline-none dark:focus:ring-primary-800">
+                                        class="flex items-center justify-center dark:text-white dark:bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:ring-primary-300 font-medium rounded-lg text-sm px-4 py-2 dark:bg-primary-600 dark:hover:bg-primary-700 focus:outline-none dark:focus:ring-primary-800">
                                         <svg class="h-3.5 w-3.5 mr-2" fill="currentColor" viewbox="0 0 20 20"
                                             xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
                                             <path clip-rule="evenodd" fill-rule="evenodd"
@@ -113,23 +113,18 @@
                                             <ul class="py-1 text-sm text-gray-700 dark:text-gray-200"
                                                 aria-labelledby="actionsDropdownButton">
                                                 <li>
-                                                    <a href="#"
+                                                    <a href="{{ route('medicines.export') }}"
                                                         class="block py-2 px-4 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white">
-                                                        Export CSV
+                                                        Export XLSX 
                                                     </a>
                                                 </li>
                                                 <li>
-                                                    <a href="#"
+                                                    <a href="{{ route('medicines.export-pdf') }}"
                                                         class="block py-2 px-4 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white">
                                                         Export PDF
                                                     </a>
                                                 </li>
                                             </ul>
-                                            <div class="py-1">
-                                                <a href="#"
-                                                    class="block py-2 px-4 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white">Delete
-                                                    all</a>
-                                            </div>
                                         </div>
                                     </div>
                                 </div>

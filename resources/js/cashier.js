@@ -129,7 +129,6 @@ async function checkout() {
     const inputCustomerAddress = document.getElementById("customerAddress");
     const orderSummaryItems = document.querySelectorAll(".summary-item");
 
-    // Tambahkan deklarasi default untuk nameDoctor dan phoneDoctor
     let nameDoctor = "";
     let phoneDoctor = "";
 
@@ -137,7 +136,11 @@ async function checkout() {
 
     // Periksa apakah ada obat dalam pesanan
     if (medicines.length === 0) {
-        alert("Tidak ada obat yang dipilih");
+        Swal.fire({
+            icon: "error",
+            title: "Oops...",
+            text: "Tidak ada obat yang dipilih!",
+        });
         return;
     }
 
@@ -156,7 +159,11 @@ async function checkout() {
 
         // Validasi input dokter jika ada obat keras
         if (!nameDoctor || !phoneDoctor) {
-            alert("Harap isi nama dan nomor telepon dokter untuk obat keras");
+            Swal.fire({
+                icon: "warning",
+                title: "Perhatian!",
+                text: "Harap isi nama dan nomor telepon dokter untuk obat keras.",
+            });
             return;
         }
     }
@@ -166,19 +173,25 @@ async function checkout() {
         inputCustomerPhone.value.trim(),
         inputCustomerAddress.value.trim(),
         medicines,
-        nameDoctor, // Tambahkan parameter
-        phoneDoctor, // Tambahkan parameter
+        nameDoctor,
+        phoneDoctor,
         hasObatKeras
     );
 
     if (order.payment_status === "Unpaid") {
-        alert("Silahkan melakukan pembayaran terlebih dahulu");
-        const confirmPayment = confirm(
-            "Apakah anda sudah melakukan konfirmasi ke dokter yang bersangkut pada obat keras? jika sudah konfirmasi silahkan klik OK"
-        );
+        const confirmPayment = await Swal.fire({
+            icon: "info",
+            title: "Konfirmasi Pembayaran",
+            text: "Apakah Anda sudah melakukan konfirmasi ke dokter untuk obat keras? Klik OK jika sudah.",
+            showCancelButton: true,
+            confirmButtonText: "OK",
+            cancelButtonText: "Batal",
+        });
 
-        if (confirmPayment) {
+        if (confirmPayment.isConfirmed) {
             order.payment_status = "Paid";
+        } else {
+            return;
         }
     }
 
@@ -208,40 +221,54 @@ async function checkout() {
 
         const data = await response.json();
         console.log("Success:", data);
-        // Handle success (e.g., show a success message)
+
+        // SweetAlert for success
+        await Swal.fire({
+            icon: "success",
+            title: "Berhasil!",
+            text: "Pesanan Anda telah diproses.",
+        });
+
+        // Reset semua input setelah berhasil
+        resetCustomerInput(inputCustomer, checkoutButton);
+        resetCustomerPhoneInput(inputCustomerPhone, checkoutButton);
+        resetCustomerAddressInput(inputCustomerAddress, checkoutButton);
+        resetDoctorInputs(hasObatKeras);
+        clearOrderSummary();
+        resetMedicineInputs();
     } catch (err) {
         console.error("Error:", err);
 
-        // Menampilkan pesan kesalahan di frontend
         const errorContainer = document.getElementById("error-container");
-        errorContainer.innerHTML = ""; // Kosongkan sebelumnya
+        errorContainer.innerHTML = "";
 
-        // Memeriksa apakah ada pesan kesalahan dari server
         if (err.message) {
-            const errorData = JSON.parse(err.message.split(", Message: ")[1]); // Mengambil data error
+            const errorData = JSON.parse(err.message.split(", Message: ")[1]);
             if (errorData.error) {
-                // Menampilkan pesan kesalahan spesifik dari server
-                errorContainer.innerHTML += `<p class="text-red-700">${errorData.error}</p>`;
+                Swal.fire({
+                    icon: "error",
+                    title: "Terjadi Kesalahan!",
+                    text: errorData.error,
+                });
             } else {
-                // Menampilkan error umum
-                errorContainer.innerHTML += `<p class="text-red-700">Terjadi kesalahan yang tidak terduga.</p>`;
+                Swal.fire({
+                    icon: "error",
+                    title: "Oops...",
+                    text: "Terjadi kesalahan yang tidak terduga.",
+                });
             }
         } else {
-            // Menampilkan error umum
-            errorContainer.innerHTML += `<p class="text-red-700">Terjadi kesalahan yang tidak terduga.</p>`;
+            Swal.fire({
+                icon: "error",
+                title: "Oops...",
+                text: "Terjadi kesalahan yang tidak terduga.",
+            });
         }
     } finally {
-        checkoutButton.disabled = false; // Aktifkan kembali tombol
+        checkoutButton.disabled = false;
     }
 
     console.log("Order:", order);
-
-    resetCustomerInput(inputCustomer, checkoutButton);
-    resetCustomerPhoneInput(inputCustomerPhone, checkoutButton);
-    resetCustomerAddressInput(inputCustomerAddress, checkoutButton);
-    resetDoctorInputs(hasObatKeras);
-    clearOrderSummary();
-    resetMedicineInputs();
 }
 
 function processOrderItems(orderSummaryItems) {

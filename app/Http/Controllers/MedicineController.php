@@ -9,9 +9,29 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Redis;
+use Maatwebsite\Excel\Facades\Excel;
+use Barryvdh\DomPDF\Facade\Pdf;
+use App\Exports\MedicineExport;                 
 
 class MedicineController extends Controller
 {
+    public function export()
+    {
+        return Excel::download(new MedicineExport, 'medicines.xlsx');
+    }
+
+    public function exportPdf()
+{
+    // Ambil data dari model
+    $medicines = Medicine::select('id', 'name', 'category_id', 'stock', 'price', 'expiry_date')->get();
+
+    // Render view dengan data
+    $pdf = Pdf::loadView('medicines.medicines-pdf', compact('medicines'));
+
+    // Unduh file PDF
+    return $pdf->download('medicines.pdf');
+}
+    
     public function index()
     {
         $medicines = Medicine::all();

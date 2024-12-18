@@ -2,7 +2,7 @@
 
     <body>
         <x-slot name="header">
-            <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
+            <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-300 leading-tight">
                 {{ __('Sales') }}
             </h2>
         </x-slot>
@@ -10,7 +10,8 @@
         <main class="mt-10 w-full h-full">
             <div class="max-w-7xl mx-auto sm:px-4 lg:px-8">
                 <div>
-                    <h1 class="text-balance p-4 text-5xl font-semibold tracking-tight text-gray-200 sm:text-3xl">Table of
+                    <h1 class="text-balance p-4 text-5xl font-semibold tracking-tight dark:text-gray-200 sm:text-3xl">
+                        Table of
                         Sales</h1>
                     <div class="mt-6 w-full pb-6">
                         <div class="relative overflow-hidden bg-white shadow-md dark:bg-gray-800 sm:rounded-lg">
@@ -19,7 +20,7 @@
                                 <div class="flex items-center flex-1 space-x-4">
                                     <h5>
                                         <span class="text-gray-500">All Products:</span>
-                                        <span class="dark:text-white">123456</span>
+                                        <span class="dark:text-white">{{ $totalMedicineRows }}</span>
                                     </h5>
                                     <h5>
                                         <span class="text-gray-500">Total sales:</span>
@@ -29,25 +30,34 @@
                                 </div>
                                 <div
                                     class="flex flex-col flex-shrink-0 space-y-3 md:flex-row md:items-center lg:justify-end md:space-y-0 md:space-x-3">
-                                    <button type="button"
-                                        class="flex items-center justify-center flex-shrink-0 px-3 py-2 text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-lg focus:outline-none hover:bg-gray-100 hover:text-primary-700 focus:z-10 focus:ring-4 focus:ring-gray-200 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700">
-                                        <svg class="w-4 h-4 mr-2" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"
-                                            fill="none" viewbox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-                                            <path stroke-linecap="round" stroke-linejoin="round"
-                                                d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0l3.181 3.183a8.25 8.25 0 0013.803-3.7M4.031 9.865a8.25 8.25 0 0113.803-3.7l3.181 3.182m0-4.991v4.99" />
+                                    <button id="actionsDropdownButton" data-dropdown-toggle="actionsDropdown"
+                                        class="w-full md:w-auto flex items-center justify-center py-2 px-4 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-primary-700 focus:z-10 focus:ring-4 focus:ring-gray-200 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700"
+                                        type="button">
+                                        <svg class="-ml-1 mr-1.5 w-5 h-5" fill="currentColor" viewbox="0 0 20 20"
+                                            xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                                            <path clip-rule="evenodd" fill-rule="evenodd"
+                                                d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" />
                                         </svg>
-                                        Update stocks 1/250
+                                        Actions
                                     </button>
-                                    <button type="button"
-                                        class="flex items-center justify-center flex-shrink-0 px-3 py-2 text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-lg focus:outline-none hover:bg-gray-100 hover:text-primary-700 focus:z-10 focus:ring-4 focus:ring-gray-200 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700">
-                                        <svg class="w-4 h-4 mr-2" xmlns="http://www.w3.org/2000/svg" fill="none"
-                                            viewbox="0 0 24 24" stroke-width="2" stroke="currentColor"
-                                            aria-hidden="true">
-                                            <path stroke-linecap="round" stroke-linejoin="round"
-                                                d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5m-13.5-9L12 3m0 0l4.5 4.5M12 3v13.5" />
-                                        </svg>
-                                        Export
-                                    </button>
+                                    <div id="actionsDropdown"
+                                        class="hidden z-10 w-44 bg-white rounded divide-y divide-gray-100 shadow dark:bg-gray-700 dark:divide-gray-600">
+                                        <ul class="py-1 text-sm text-gray-700 dark:text-gray-200"
+                                            aria-labelledby="actionsDropdownButton">
+                                            <li>
+                                                <a href="{{ route('sales.export-xlsx') }}"
+                                                    class="block py-2 px-4 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white">
+                                                    Export XLSX
+                                                </a>
+                                            </li>
+                                            <li>
+                                                <a href="{{ route('sales.export-pdf') }}"
+                                                    class="block py-2 px-4 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white">
+                                                    Export PDF
+                                                </a>
+                                            </li>
+                                        </ul>
+                                    </div>
                                 </div>
                             </div>
                             <div class="overflow-x-auto">
@@ -80,7 +90,7 @@
                                                     <td class="px-4 py-2 flex justify-center items-center">
                                                         {{ $sale->customer_id }}
                                                     </td>
-                                                    <td class="px-4 py-2 text-lg text-white">
+                                                    <td class="px-4 py-2 text-lg dark:text-white">
                                                         {{ optional($sale->customer)->name ?? 'No Customer' }}
                                                     </td>
                                                     <td class="px-4 py-2">
@@ -100,16 +110,29 @@
                                                         class="px-4 py-2 font-medium text-gray-900 whitespace-nowrap dark:text-white">
                                                         {{ $sale->payment_status }}</td>
                                                     <td class="px-4 py-2">
-                                                        {{ $sale->created_at }}
+                                                        {{ $sale->updated_at->diffForHumans() }}
                                                     </td>
                                                     <td class="px-4 py-2">
-                                                        {{ $sale->updated_at }}
+                                                        {{ $sale->updated_at->diffForHumans() }}
                                                     </td>
                                                     <td class="px-4 py-4 flex flex-row gap-4">
-                                                        <a class="text-white bg-yellow-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-yellow-300 font-medium rounded-lg text-sm px-1 py-1 text-center dark:bg-yellow-600 dark:hover:bg-yellow-700 dark:focus:ring-yellow-800"
-                                                            href="#">Edit</a>
-                                                        <a class="text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-sm px-1 py-1 text-center dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-800"
-                                                            href="#">Delete</a>
+                                                        <button x-data
+                                                            x-on:click.prevent="
+                                                                            $dispatch('open-modal', 'edit-sale-modal');
+                                                                            $dispatch('set-sale-data', {
+                                                                                id: {{ $sale->id }},
+                                                                                customer_name: '{{ $sale->customer->name }}',
+                                                                                payment_status: '{{ $sale->payment_status }}',
+                                                                                sale_date: '{{ $sale->sale_date }}'
+                                                                            })
+                                                                        "
+                                                            class="text-white bg-yellow-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-yellow-300 font-medium rounded-lg text-sm px-1 py-1 text-center dark:bg-yellow-600 dark:hover:bg-yellow-700 dark:focus:ring-yellow-800">Edit</button>
+                                                        <button x-data=""
+                                                            x-on:click.prevent="$dispatch('open-modal', 'delete-sale-modal');
+                                                                    $dispatch('set-sale-data', {
+                                                                        id: {{ $sale->id }},
+                                                                    })"
+                                                            class="text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-sm px-1 py-1 text-center dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-800">Delete</button>
                                                         <a class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-1 py-1 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
                                                             href="{{ route('sale.detail', $sale->id) }}">View
                                                             Details</a>
@@ -125,5 +148,7 @@
                 </div>
             </div>
         </main>
+        @include('sales.modalDelete')
+        @include('sales.modalEdit')
     </body>
 </x-app-layout>

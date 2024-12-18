@@ -6,13 +6,46 @@ use App\Models\Customer;
 use App\Models\Medicine;
 use App\Models\Sale;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
+use Maatwebsite\Excel\Facades\Excel;
+use Barryvdh\DomPDF\Facade\Pdf;
+use App\Exports\SaleExport;     
 
 use Exception;
 
 class SaleController extends Controller
 {
+        public function export()
+    {
+        return Excel::download(new SaleExport, 'sales.xlsx');
+    }
+
+    public function exportPdf()
+{
+    // Ambil data yang sama dengan tabel
+    $sales = Sale::with('customer')
+        ->select('id', 'customer_id', 'sale_date', 'total_amount', 'payment_status', 'created_at', 'updated_at')
+        ->get()
+        ->map(function ($sale) {
+            return [
+                'Customer ID' => $sale->customer_id,
+                'Customer Name' => optional($sale->customer)->name ?? 'No Customer',
+                'Sales Date' => $sale->sale_date,
+                'Total Amount' => 'Rp ' . number_format($sale->total_amount, 0, ',', '.'),
+                'Payment Status' => $sale->payment_status,
+                'Created At' => $sale->created_at->format('Y-m-d H:i:s'),
+                'Updated At' => $sale->updated_at->format('Y-m-d H:i:s'),
+            ];
+        });
+
+    // Render view dengan data
+    $pdf = Pdf::loadView('sales.sales-pdf', compact('sales'));
+
+    // Unduh file PDF
+    return $pdf->download('sales.pdf');
+}
     public function store(Request $request)
     {
         try {
@@ -94,6 +127,56 @@ class SaleController extends Controller
         } catch (\Exception $e) {
             Log::error('Error creating sale: ' . $e->getMessage() . ' on line ' . $e->getLine());
             return response()->json(['error' => $e->getMessage()], 500);
+        }
+    }
+
+   public function update(Request $request, $id) {
+    try {  
+        $sale = Sale::findOrFail($id);
+
+        // Validasi incoming request data
+        $request->validate([    
+            'payment_status' => 'required|in:Paid,Unpaid',
+            'customer_name' => 'required|string|max:100',
+            'sale_date' => 'required|date', 
+        ]);
+
+        // Periksa apakah customer_name sudah ada di tabel customers
+        $customer = Customer::where('name', $request->customer_name)->first();
+
+        if (!$customer) {
+            // Jika tidak ada, buat customer baru
+            $customer = Customer::create([
+                'name' => $request->customer_name,
+                'phone' => $request->customer_phone,    
+                'address' => $request->customer_address,
+            ]);
+        }
+
+        // Perbarui data penjualan dengan customer_id dari tabel Customer
+        $sale->update([
+            'customer_id' => $customer->id,
+            'payment_status' => $request->payment_status,
+            'sale_date' => $request->sale_date,
+        ]);
+
+        return Redirect::to('/sales')->with('success', 'Medicine updated successfully!');
+    } catch (Exception $e) {
+        Log::error('Error updating sale: ' . $e->getMessage() . ' on line ' . $e->getLine());       
+        return response()->json(['error' => $e->getMessage()], 500);    
+    }
+}
+    
+
+    public function destroy($id)
+    {
+        try {
+            $sale = Sale::findOrFail($id);
+            $sale->delete();
+            return Redirect::to('/sales')->with('success', 'Sale deleted successfully');
+        } catch (Exception $e) {
+            Log::error('Error deleting sale: ' . $e->getMessage() . ' on line ' . $e->getLine());                   
+            return response()->json(['error' => $e->getMessage()], 500);            
         }
     }
 }

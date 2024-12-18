@@ -5,7 +5,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <title>ApotekMS</title>
+    <title>Apotech</title>
 
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.bunny.net">
@@ -911,8 +911,9 @@
     <header class="bg-white dark:bg-gray-800 p-4">
         @if (Route::has('login'))
             <nav class="flex items-center justify-between">
-                <div class="text-white font-semibold">
+                <div class="text-white font-semibold flex gap-4">
                     <img width="40px" height="40px" src="/assets/logo/pharmacy_logo.png" alt="logo">
+                    <h1 class="text-2xl">Apotech</h1>
                 </div>
                 <div class="flex items-center">
                       @auth
@@ -1085,7 +1086,7 @@
     <footer class="bg-gray-800 text-white py-6 mt-10">
         <div class="container mx-auto flex flex-col items-center space-y-4">
             <!-- Logo / Name -->
-            <div class="text-lg font-bold">PharmacyApp</div>
+            <div class="text-lg font-bold">Apotech.</div>
 
             <!-- Links -->
             <div class="flex space-x-6 text-sm">
@@ -1097,10 +1098,15 @@
 
             <!-- Copyright -->
             <div class="text-xs text-gray-400">
-                © 2024 PharmacyApp. All rights reserved.
+                © 2024 Apotech. All rights reserved.
             </div>
         </div>
     </footer>
+    <script>
+    if (localStorage.getItem('darkMode') === 'enabled') {
+        document.documentElement.classList.add('dark');
+    }
+</script>
 </body>
 
 </html>

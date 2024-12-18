@@ -32,6 +32,8 @@
                     <!-- Details Section -->
                     <div class="mb-8">
                         <h2 class="text-2xl font-bold mb-4">Details</h2>
+                        <h2 class="text-gray-400 text-sm mb-4">Doctor Name : {{ $sale->doctor_name ?? 'Obat tidak membutuhkan Resep Dokter' }}</h2>
+                        <h2 class="text-gray-400 text-sm mb-4">Doctor Phone : {{ $sale->doctor_phone ?? 'Obat tidak membutuhkan Resep Dokter' }}</h2>
                         <div class="overflow-hidden rounded-lg shadow-md bg-gray-800">
                             <ul class="divide-y divide-gray-700">
                                 @foreach ($sale->saleDetails as $detail)

@@ -37,8 +37,24 @@ Route::get('/medicines', function () {
     return view('medicines', ['medicines' => $medicines]);
 })->middleware(['auth', 'verified', CheckRole::class . ':admin,pharmacist,inventory_manager'])->name('medicines');
 
+// Medicines
+Route::get('/medicines/export', [MedicineController::class, 'export'])->middleware(['auth', 'verified', CheckRole::class . ':admin,pharmacist,inventory_manager'])->name('medicines.export');
+Route::get('/medicines/export-pdf', [MedicineController::class, 'exportPdf'])->middleware(['auth', 'verified', CheckRole::class . ':admin,pharmacist,inventory_manager'])->name('medicines.export-pdf');
+
+// Sales
+Route::get('/sales/export-xlsx', [SaleController::class, 'export'])->middleware(['auth', 'verified', CheckRole::class . ':admin,pharmacist,cashier'])->name('sales.export-xlsx');
+Route::get('/sales/export-pdf', [SaleController::class, 'exportPdf'])->middleware(['auth', 'verified', CheckRole::class . ':admin,pharmacist,cashier'])->name('sales.export-pdf'); 
+
+// Customers
+Route::get('/customers/export-xlsx', [CustomerController::class, 'export'])->middleware(['auth', 'verified', CheckRole::class . ':admin,pharmacist,cashier'])->name('customers.export-xlsx');
+Route::get('/customers/export-pdf', [CustomerController::class, 'exportPdf'])->middleware(['auth', 'verified', CheckRole::class . ':admin,pharmacist,cashier'])->name('customers.export-pdf');
+
+// Suppliers
+Route::get('/suppliers/export-xlsx', [SupplierController::class, 'export'])->middleware(['auth', 'verified', CheckRole::class . ':admin,inventory_manager'])->name('suppliers.export-xlsx');        
+Route::get('/suppliers/export-pdf', [SupplierController::class, 'exportPdf'])->middleware(['auth', 'verified', CheckRole::class . ':admin,inventory_manager'])->name('suppliers.export-pdf');                           
+
 Route::get('/medicines/{id}', function ($id) {
-    $medicine = Medicine::find($id);
+    $medicine = Medicine::find($id);    
     if (!$medicine) {
         abort(404);
     }
@@ -53,11 +69,16 @@ Route::get('/sales', function () {
     // Ambil semua data penjualan
     $sales = Sale::with('customer')->get();
 
+    // Ambil semua data obat
+    $medicines = Medicine::all();
+
+    // Hitung jumlah total row di tabel medicine
+    $totalMedicineRows = Medicine::count();
     // Hitung total amount dari semua penjualan
     $totalSales = $sales->sum('total_amount');
 
     // Kembalikan view dengan data penjualan dan total penjualan
-    return view('sales', ['sales' => $sales, 'totalSales' => $totalSales]);
+    return view('sales', ['sales' => $sales, 'totalSales' => $totalSales, 'totalMedicineRows' => $totalMedicineRows]);  
 })->middleware(['auth', 'verified', CheckRole::class . ':admin,pharmacist,cashier'])->name('sales');
 
 Route::get('/sales/{id}', function ($id) {
@@ -95,6 +116,8 @@ Route::post('/medicines/search', [MedicineController::class, 'search'])->name('m
 
 // sales CRUD
 Route::post('/checkout', [SaleController::class, 'store'])->name('cashier.checkout')->middleware(['auth', 'verified', CheckRole::class . ':admin,pharmacist,cashier']);
+Route::put('/sales/{id}', [SaleController::class, 'update'])->name('sale.update')->middleware(['auth', 'verified', CheckRole::class . ':admin,pharmacist,cashier']);
+Route::delete('/sales/{id}', [SaleController::class, 'destroy'])->name('sale.delete')->middleware(['auth', 'verified', CheckRole::class . ':admin,pharmacist,cashier']);   
 
 // supplier RUD
 Route::put('/suppliers/{id}', [SupplierController::class, 'update'])->name('supplier.update')->middleware(['auth', 'verified', CheckRole::class . ':admin,inventory_manager']);  

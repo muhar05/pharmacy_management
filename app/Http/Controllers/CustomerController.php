@@ -6,9 +6,29 @@ use App\Models\Customer;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Redirect;
+use Maatwebsite\Excel\Facades\Excel;
+use Barryvdh\DomPDF\Facade\Pdf;
+use App\Exports\CustomerExport;       
 
 class CustomerController extends Controller
 {
+        public function export()
+    {
+        return Excel::download(new CustomerExport, 'customer.xlsx');
+    }
+
+    public function exportPdf()
+{
+    // Ambil data dari model
+    $customers = Customer::select('id', 'name', 'phone', 'address', 'created_at', 'updated_at')->get();
+
+    // Render view dengan data
+    $pdf = Pdf::loadView('customers.customer-pdf', compact('customers'));
+
+    // Unduh file PDF
+    return $pdf->download('customer.pdf');
+}
+    
     public function store(Request $request)
     {
         $validated = $request->validate([
