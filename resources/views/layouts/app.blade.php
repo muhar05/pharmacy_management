@@ -16,6 +16,7 @@
 
     <!-- Scripts -->
     @vite(['resources/css/app.css', 'resources/js/app.js'])
+    <link href="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.css" rel="stylesheet">
 </head>
 
 <body class="font-sans antialiased">
@@ -41,6 +42,9 @@
     if (localStorage.getItem('darkMode') === 'enabled') {
         document.documentElement.classList.add('dark');
     }
+</script>
+<script>
+    AOS.init();
 </script>
 
 </html>
