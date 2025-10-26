@@ -30,13 +30,6 @@ Route::get('/cashier', function () {
     return view('cashier', ['medicines' => Medicine::latest()->get()]);
 })->middleware(['auth', 'verified', CheckRole::class . ':admin,pharmacist,cashier,inventory_manager'])->name('cashier');
 
-Route::get('/medicines', function () {
-    // Mengambil data medicines dengan eager loading untuk kategori dan supplier
-    $medicines = Medicine::with(['category', 'supplier'])->latest()->get();
-
-    return view('medicines', ['medicines' => $medicines]);
-})->middleware(['auth', 'verified', CheckRole::class . ':admin,pharmacist,inventory_manager'])->name('medicines');
-
 // Medicines
 Route::get('/medicines/export', [MedicineController::class, 'export'])->middleware(['auth', 'verified', CheckRole::class . ':admin,pharmacist,inventory_manager'])->name('medicines.export');
 Route::get('/medicines/export-pdf', [MedicineController::class, 'exportPdf'])->middleware(['auth', 'verified', CheckRole::class . ':admin,pharmacist,inventory_manager'])->name('medicines.export-pdf');
@@ -51,7 +44,11 @@ Route::get('/customers/export-pdf', [CustomerController::class, 'exportPdf'])->m
 
 // Suppliers
 Route::get('/suppliers/export-xlsx', [SupplierController::class, 'export'])->middleware(['auth', 'verified', CheckRole::class . ':admin,inventory_manager'])->name('suppliers.export-xlsx');        
-Route::get('/suppliers/export-pdf', [SupplierController::class, 'exportPdf'])->middleware(['auth', 'verified', CheckRole::class . ':admin,inventory_manager'])->name('suppliers.export-pdf');                           
+Route::get('/suppliers/export-pdf', [SupplierController::class, 'exportPdf'])->middleware(['auth', 'verified', CheckRole::class . ':admin,inventory_manager'])->name('suppliers.export-pdf');    
+
+Route::get('/medicines', [MedicineController::class, 'index'])
+    ->middleware(['auth', 'verified', CheckRole::class . ':admin,pharmacist,inventory_manager'])
+    ->name('medicines');
 
 Route::get('/medicines/{id}', function ($id) {
     $medicine = Medicine::find($id);    

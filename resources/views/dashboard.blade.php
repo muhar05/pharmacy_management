@@ -8,8 +8,7 @@
 
     <div class="bg-gradient-to-br from-indigo-50 to-white min-h-screen">
         <div class="max-w-full mx-auto">
-            <div class="overflow-hidden shadow-lg bg-white dark:bg-gray-900 transition-all duration-300"
-                data-aos="fade-up" data-aos-duration="900">
+            <div class="overflow-hidden shadow-lg bg-white dark:bg-gray-900 transition-all duration-300">
                 <div class="p-8 text-gray-900 dark:text-gray-100">
                     <div class="container mx-auto px-4 py-8">
                         <h2 class="text-3xl font-bold mb-8 text-indigo-700 dark:text-indigo-300 text-center"
@@ -88,31 +87,122 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="w-full mt-10 flex flex-col md:flex-row justify-center gap-6 items-start"
-                            data-aos="fade-up" data-aos-duration="900">
-                            <div class="w-full md:w-1/2 p-6 bg-white dark:bg-gray-900 rounded-xl shadow flex-1">
-                                <h1 class="font-semibold text-lg text-indigo-700 dark:text-indigo-300 mb-2">Stok Rendah
-                                </h1>
-                                <ul class="grid grid-cols-1 sm:grid-cols-2 gap-2 p-2 list-disc ml-4">
-                                    @forelse ($lowStockMedicines as $medicine)
-                                        <li>{{ $medicine->name }} <span class="text-xs text-red-500">(Stock:
-                                                {{ $medicine->stock }})</span></li>
-                                    @empty
-                                        <li class="text-gray-500">Semua stok aman</li>
-                                    @endforelse
-                                </ul>
+                        {{-- Cards: Stok Terendah & Kadaluarsa (shadcn-like) --}}
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-10" data-aos="fade-up" data-aos-duration="900">
+                            {{-- Card: Stok Terendah --}}
+                            <div class="rounded-xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 shadow-sm">
+                                <div class="p-5 border-b border-gray-200 dark:border-gray-800 flex items-center justify-between">
+                                    <div class="flex items-center gap-3">
+                                        <div class="h-9 w-9 rounded-md bg-red-100 dark:bg-red-900/30 text-red-600 flex items-center justify-center">
+                                            <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2"
+                                                viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round"
+                                                    d="M12 8v4m0 4h.01M21 12c0 4.97-4.03 9-9 9s-9-4.03-9-9 4.03-9 9-9 9 4.03 9 9z" />
+                                            </svg>
+                                        </div>
+                                        <div>
+                                            <h3 class="text-base font-semibold leading-none tracking-tight">Obat Stok
+                                                Terendah</h3>
+                                            <p class="text-sm text-gray-500 dark:text-gray-400">Prioritaskan restock
+                                                segera</p>
+                                        </div>
+                                    </div>
+                                    <span class="inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-semibold bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-200">
+                                        Low stock
+                                    </span>
+                                </div>
+                                <div class="p-5">
+                                    <ul class="divide-y divide-gray-200 dark:divide-gray-800">
+                                        @forelse ($lowStockMedicines as $medicine)
+                                            <li class="py-3 flex items-center justify-between">
+                                                <div class="min-w-0">
+                                                    <p class="text-sm font-medium text-gray-900 dark:text-gray-100 truncate">
+                                                        {{ $medicine->name }}
+                                                    </p>
+                                                    <div class="mt-1 flex items-center gap-2">
+                                                        <span
+                                                            class="inline-flex items-center rounded-full px-2 py-0.5 text-xs font-semibold bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-200">
+                                                            Stok: {{ $medicine->stock }}
+                                                        </span>
+                                                        @if(!empty($medicine->sku))
+                                                            <span class="text-xs text-gray-500 dark:text-gray-400">SKU:
+                                                                {{ $medicine->sku }}</span>
+                                                        @endif
+                                                    </div>
+                                                </div>
+                                                <span class="h-2.5 w-2.5 rounded-full bg-red-500"></span>
+                                            </li>
+                                        @empty
+                                            <li class="py-6 text-center text-sm text-gray-500 dark:text-gray-400">
+                                                Semua stok aman
+                                            </li>
+                                        @endforelse
+                                    </ul>
+                                </div>
+                                <div class="px-5 py-3 border-t border-gray-200 dark:border-gray-800 text-right">
+                                    <a href="{{ route('medicines') }}"
+                                        class="text-sm font-medium text-indigo-600 hover:text-indigo-700 dark:text-indigo-400 dark:hover:text-indigo-300">
+                                        Lihat semua
+                                    </a>
+                                </div>
                             </div>
-                            <div class="w-full md:w-1/2 p-6 bg-white dark:bg-gray-900 rounded-xl shadow flex-1">
-                                <h1 class="font-semibold text-lg text-indigo-700 dark:text-indigo-300 mb-2">Kadaluarsa
-                                    dalam 30 hari</h1>
-                                <ul class="grid grid-cols-1 sm:grid-cols-2 gap-2 p-2 list-disc ml-4">
-                                    @forelse ($expiringMedicines as $medicine)
-                                        <li>{{ $medicine->name }} <span class="text-xs text-orange-500">(Exp:
-                                                {{ $medicine->formatted_expiry_date }})</span></li>
-                                    @empty
-                                        <li class="text-gray-500">Tidak ada obat kadaluarsa</li>
-                                    @endforelse
-                                </ul>
+
+                            {{-- Card: Obat Kadaluarsa (<= 30 hari) --}}
+                            <div class="rounded-xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 shadow-sm">
+                                <div class="p-5 border-b border-gray-200 dark:border-gray-800 flex items-center justify-between">
+                                    <div class="flex items-center gap-3">
+                                        <div class="h-9 w-9 rounded-md bg-orange-100 dark:bg-orange-900/30 text-orange-600 flex items-center justify-center">
+                                            <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2"
+                                                viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round"
+                                                    d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                            </svg>
+                                        </div>
+                                        <div>
+                                            <h3 class="text-base font-semibold leading-none tracking-tight">Obat
+                                                Kadaluarsa ≤ 30 Hari</h3>
+                                            <p class="text-sm text-gray-500 dark:text-gray-400">Cek tanggal exp dan
+                                                lakukan retur</p>
+                                        </div>
+                                    </div>
+                                    <span class="inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-semibold bg-orange-100 text-orange-700 dark:bg-orange-900/30 dark:text-orange-200">
+                                        Expiring
+                                    </span>
+                                </div>
+                                <div class="p-5">
+                                    <ul class="divide-y divide-gray-200 dark:divide-gray-800">
+                                        @forelse ($expiringMedicines as $medicine)
+                                            <li class="py-3 flex items-center justify-between">
+                                                <div class="min-w-0">
+                                                    <p class="text-sm font-medium text-gray-900 dark:text-gray-100 truncate">
+                                                        {{ $medicine->name }}
+                                                    </p>
+                                                    <div class="mt-1 flex items-center gap-2">
+                                                        <span
+                                                            class="inline-flex items-center rounded-full px-2 py-0.5 text-xs font-semibold bg-orange-100 text-orange-700 dark:bg-orange-900/30 dark:text-orange-200">
+                                                            Exp: {{ $medicine->formatted_expiry_date }}
+                                                        </span>
+                                                        @if(!empty($medicine->batch))
+                                                            <span class="text-xs text-gray-500 dark:text-gray-400">Batch:
+                                                                {{ $medicine->batch }}</span>
+                                                        @endif
+                                                    </div>
+                                                </div>
+                                                <span class="h-2.5 w-2.5 rounded-full bg-orange-500"></span>
+                                            </li>
+                                        @empty
+                                            <li class="py-6 text-center text-sm text-gray-500 dark:text-gray-400">
+                                                Tidak ada obat mendekati kadaluarsa
+                                            </li>
+                                        @endforelse
+                                    </ul>
+                                </div>
+                                <div class="px-5 py-3 border-t border-gray-200 dark:border-gray-800 text-right">
+                                    <a href="{{ route('medicines') }}"
+                                        class="text-sm font-medium text-indigo-600 hover:text-indigo-700 dark:text-indigo-400 dark:hover:text-indigo-300">
+                                        Lihat semua
+                                    </a>
+                                </div>
                             </div>
                         </div>
                     </div>

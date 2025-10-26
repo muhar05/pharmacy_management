@@ -63,12 +63,20 @@ public function index(Request $request)
     // Jika best seller ditemukan, ambil nama obatnya
     $bestSellerName = $bestSeller ? $this->getMedicineName($bestSeller->medicine_id) : 'N/A';
 
-    // Ambil obat-obat dengan stok rendah (stock < stock_minimum)
-    $lowStockMedicines = Medicine::where('stock', '<', DB::raw('minimum_stock'))->get();
+    // Ambil obat-obat dengan stok rendah (2 terendah)
+    $lowStockMedicinesQuery = Medicine::where('stock', '<', DB::raw('minimum_stock'));
+    $lowStockCount = (clone $lowStockMedicinesQuery)->count();
+    $lowStockMedicines = (clone $lowStockMedicinesQuery)
+        ->orderBy('stock', 'asc')
+        ->take(2)
+        ->get();
 
-    // Ambil obat-obat yang kadaluarsa dalam 30 hari
-    $expiringMedicines = Medicine::where('expiry_date', '<=', now()->addDays(30))
-        ->where('expiry_date', '>=', now())
+    // Ambil obat-obat yang kadaluarsa dalam 30 hari (2 terdekat)
+    $expiringMedicinesQuery = Medicine::whereBetween('expiry_date', [now(), now()->addDays(30)]);
+    $expiringCount = (clone $expiringMedicinesQuery)->count();
+    $expiringMedicines = (clone $expiringMedicinesQuery)
+        ->orderBy('expiry_date', 'asc')
+        ->take(2)
         ->get();
 
     // Jika permintaan AJAX, kembalikan data dalam format JSON
@@ -79,6 +87,8 @@ public function index(Request $request)
             'bestSeller' => $bestSellerName,
             'lowStockMedicines' => $lowStockMedicines,
             'expiringMedicines' => $expiringMedicines,
+            'lowStockCount' => $lowStockCount,
+            'expiringCount' => $expiringCount,
         ]);
     }
 
@@ -90,6 +100,8 @@ public function index(Request $request)
         'period' => $period,
         'lowStockMedicines' => $lowStockMedicines,
         'expiringMedicines' => $expiringMedicines,
+        'lowStockCount' => $lowStockCount,
+        'expiringCount' => $expiringCount,
     ]);
 }
     // Fungsi untuk mendapatkan nama obat berdasarkan medicine_id

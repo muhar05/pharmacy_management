@@ -34,52 +34,39 @@ class MedicineController extends Controller
     
     public function index()
     {
-        $medicines = Medicine::all();
+        $medicines = Medicine::with(['category', 'supplier'])
+            ->orderBy('name')
+            ->paginate(10)
+            ->withQueryString();
 
-        foreach ($medicines as $medicine) {
-            echo $medicine->name . ' - ' . formatRupiah($medicine->price) . '<br>';
-        }
+        return view('medicines', compact('medicines'));
     }
 
     public function search(Request $request)
     {
-        $query = $request->input('query'); // Mendapatkan input pencarian
-        $categories = $request->input('categories'); // Mendapatkan input kategori
+        $query = $request->input('query');
+        $categories = $request->input('categories');
 
-        // Query to fetch medicines based on name or category
-        $medicines = Medicine::with(['category', 'supplier']) // Eager load category and supplier
+        $medicines = Medicine::with(['category', 'supplier'])
             ->when($query, function ($queryBuilder) use ($query) {
-                // Search by medicine name
                 return $queryBuilder->where('name', 'like', '%' . $query . '%');
             })
             ->when($categories && count($categories) > 0, function ($queryBuilder) use ($categories) {
-                // Search by category name
-                return $queryBuilder->whereHas('category', function ($query) use ($categories) {
-                    $query->whereIn('name', $categories); // Filter by category name
+                return $queryBuilder->whereHas('category', function ($q) use ($categories) {
+                    $q->whereIn('name', $categories);
                 });
             })
-            ->get();
+            ->orderBy('name')
+            ->paginate(10)
+            ->withQueryString();
 
-        // Eksekusi query dan format hasilnya
-        $results = $medicines->map(function ($medicine) {
-            return [
-                'id' => $medicine->id,
-                'name' => $medicine->name,
-                'category' => $medicine->category->name ?? 'N/A', // Menangani jika tidak ada kategori
-                'stock' => $medicine->stock,
-                'price' => $medicine->price,
-                'supplier_name' => $medicine->supplier->name ?? 'N/A', // Menangani jika tidak ada supplier
-                'type' => $medicine->type,
-                'expiry_date' => $medicine->expiry_date,
-                'formatted_expiry_date' => $medicine->expiry_date
-                    ? \Carbon\Carbon::parse($medicine->expiry_date)->format('d F Y')
-                    : '-', // Pastikan ini tidak memanggil parse jika null
-                'description' => $medicine->description
-            ];
-        });
+        if ($request->ajax()) {
+            return response()->json([
+                'html' => view('medicines.partials.table', compact('medicines'))->render()
+            ]);
+        }
 
-        // Mengembalikan hasil dalam bentuk JSON
-        return response()->json($results);
+        return view('medicines', compact('medicines'));
     }
 
     public function store(Request $request)
