@@ -68,8 +68,8 @@ CREATE INDEX IF NOT EXISTS idx_sales_date_payment ON sales(sale_date, payment_st
 -- ============================================
 -- Foreign keys (sale_id, medicine_id) are already indexed
 
--- Composite index for medicine sales analysis
-CREATE INDEX IF NOT EXISTS idx_sale_details_medicine_date ON sale_details(medicine_id, created_at);
+-- Note: For accurate medicine sales analysis by date, join with sales table and use sale_date
+-- This index on created_at is for record creation tracking purposes
 
 -- ============================================
 -- Customers Table Indexes

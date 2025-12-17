@@ -41,22 +41,29 @@ cat create_database.sql tables.sql sample_data.sql indexes.sql | mysql -u root -
 
 After running `sample_data.sql`, you can login with:
 
-**Admin:**
-- Email: `admin@example.com`
-- Password: `admin123`
+**Temporary Credentials:**
+- **Admin**: `admin@example.com` / `password`
+- **Pharmacist**: `pharmacist@example.com` / `password`
 
-**Pharmacist:**
-- Email: `pharmacist@example.com`
-- Password: `pharmacist123`
+⚠️ **Important**: The SQL script uses Laravel's default test password hash (`password`). To set more secure credentials:
 
-⚠️ **Important**: These are demo credentials. For production use:
-1. Change passwords immediately after first login
-2. Generate proper password hashes using Laravel:
-   ```bash
-   php artisan tinker
-   echo Hash::make('your_secure_password');
-   ```
-3. Update the hashes in the database
+**Option 1 - Update via Laravel Tinker:**
+```bash
+php artisan tinker
+User::where('email', 'admin@example.com')->first()->update(['password' => Hash::make('admin123')]);
+User::where('email', 'pharmacist@example.com')->first()->update(['password' => Hash::make('pharmacist123')]);
+```
+
+**Option 2 - Use Laravel Seeders Instead:**
+```bash
+php artisan db:seed
+```
+This will create users with `admin123` and `pharmacist123` passwords.
+
+**For Production:**
+1. Always change default passwords immediately
+2. Use strong, unique passwords
+3. Enable two-factor authentication if available
 
 ## Database Structure
 

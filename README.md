@@ -155,13 +155,20 @@ The application will be available at: `http://localhost:8000`
 
 After seeding the database, you can login with these default credentials:
 
-**Admin Account:**
-- Email: `admin@example.com`
-- Password: `admin123`
+**Using Laravel Seeders (`php artisan db:seed`):**
+- **Admin**: `admin@example.com` / `admin123`
+- **Pharmacist**: `pharmacist@example.com` / `pharmacist123`
 
-**Pharmacist Account:**
-- Email: `pharmacist@example.com`
-- Password: `pharmacist123`
+**Using SQL Scripts (database/migrations/sql/sample_data.sql):**
+- **Admin**: `admin@example.com` / `password`
+- **Pharmacist**: `pharmacist@example.com` / `password`
+
+> **Note**: SQL scripts use Laravel's default test password hash. To use admin123/pharmacist123 with SQL scripts, update passwords after import:
+> ```bash
+> php artisan tinker
+> User::where('email', 'admin@example.com')->first()->update(['password' => Hash::make('admin123')]);
+> User::where('email', 'pharmacist@example.com')->first()->update(['password' => Hash::make('pharmacist123')]);
+> ```
 
 ⚠️ **Important**: Change these default passwords immediately after first login in production!
 

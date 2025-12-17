@@ -28,14 +28,23 @@ USE pharmacy_management;
 -- 1. Insert Users
 -- Password hashes generated using Laravel's Hash::make()
 -- ============================================
+-- IMPORTANT: These password hashes are for TESTING ONLY
+-- The hashes below are for the password 'password' (Laravel's default test hash)
+-- To use the documented credentials (admin123/pharmacist123), you MUST:
+--   1. First run this script to create the users
+--   2. Then use Laravel to update the passwords:
+--      php artisan tinker
+--      User::where('email', 'admin@example.com')->first()->update(['password' => Hash::make('admin123')]);
+--      User::where('email', 'pharmacist@example.com')->first()->update(['password' => Hash::make('pharmacist123')]);
+--   OR login with 'password' as the password for both accounts initially
+
 INSERT INTO users (name, email, position, password, created_at, updated_at) VALUES
 ('Admin User', 'admin@example.com', 'admin', '$2y$12$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', NOW(), NOW()),
 ('Pharmacist User', 'pharmacist@example.com', 'pharmacist', '$2y$12$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', NOW(), NOW());
 
--- Note: The password hash above is for 'password'. 
--- For actual credentials (admin123 and pharmacist123), you should generate proper hashes using:
--- php artisan tinker
--- echo Hash::make('admin123');
+-- Temporary login credentials (until passwords are updated):
+-- Email: admin@example.com / Password: password
+-- Email: pharmacist@example.com / Password: password
 
 -- ============================================
 -- 2. Insert Categories
@@ -58,7 +67,9 @@ INSERT INTO suppliers (name, address, phone, email, created_at, updated_at) VALU
 -- ============================================
 -- 4. Insert Medicines
 -- Sample medicines with various categories and suppliers
--- Note: Prices are in smallest currency unit (e.g., cents)
+-- Note: Prices are in smallest currency unit (Indonesian Rupiah without decimal)
+-- Note: category_id references (1=Obat Keras, 2=Obat Bebas, 3=Obat Bebas Terbatas)
+-- Note: supplier_id references the suppliers inserted above (1-5)
 -- ============================================
 INSERT INTO medicines (name, category_id, supplier_id, stock, minimum_stock, price, require_prescription, description, expiry_date, type, unit, dosage, instructions, created_at, updated_at) VALUES
 -- Pain Relief Medicines
