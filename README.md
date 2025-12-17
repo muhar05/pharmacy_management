@@ -1,66 +1,338 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Pharmacy Management System
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+A comprehensive web-based pharmacy management application built with Laravel 11, designed to streamline pharmacy operations including inventory management, sales tracking, customer records, and supplier management.
 
-## About Laravel
+## Features
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+- 🏥 **User Management**: Multi-role system (Admin, Pharmacist, Staff)
+- 💊 **Medicine Inventory**: Complete medicine database with categories, suppliers, stock tracking, and expiry date management
+- 📦 **Stock Management**: Real-time inventory tracking with low stock alerts and restock history
+- 💰 **Sales Management**: Point of sale system with detailed transaction records
+- 👥 **Customer Database**: Customer information and medical history tracking
+- 🏢 **Supplier Management**: Supplier contact and product information
+- 📊 **Reports & Analytics**: Sales reports, inventory reports, and financial summaries
+- 🔐 **Secure Authentication**: Role-based access control with Laravel Breeze
+- 📄 **PDF Export**: Generate reports and invoices in PDF format
+- 📥 **Excel Export**: Export data to Excel for further analysis
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+## Prerequisites
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+Before you begin, ensure you have the following installed on your system:
 
-## Learning Laravel
+- **PHP**: Version 8.2 or higher
+- **Composer**: Latest version
+- **Node.js & NPM**: For asset compilation
+- **MySQL**: Version 5.7 or higher (or MariaDB 10.3+)
+- **Web Server**: Apache or Nginx
+- **PHP Extensions**:
+  - BCMath
+  - Ctype
+  - cURL
+  - DOM
+  - Fileinfo
+  - JSON
+  - Mbstring
+  - OpenSSL
+  - PCRE
+  - PDO
+  - Tokenizer
+  - XML
+  - GD or Imagick (for PDF generation)
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+## Installation
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+### 1. Clone the Repository
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+```bash
+git clone https://github.com/muhar05/pharmacy_management.git
+cd pharmacy_management
+```
 
-## Laravel Sponsors
+### 2. Install PHP Dependencies
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+```bash
+composer install
+```
 
-### Premium Partners
+### 3. Install Node Dependencies
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[WebReinvent](https://webreinvent.com/)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Jump24](https://jump24.co.uk)**
-- **[Redberry](https://redberry.international/laravel/)**
-- **[Active Logic](https://activelogic.com)**
-- **[byte5](https://byte5.de)**
-- **[OP.GG](https://op.gg)**
+```bash
+npm install
+```
+
+### 4. Environment Configuration
+
+Copy the example environment file and configure it:
+
+```bash
+cp .env.example .env
+```
+
+Edit the `.env` file and configure your database settings:
+
+```env
+APP_NAME="Pharmacy Management System"
+APP_URL=http://localhost:8000
+
+DB_CONNECTION=mysql
+DB_HOST=127.0.0.1
+DB_PORT=3306
+DB_DATABASE=pharmacy_management
+DB_USERNAME=your_mysql_username
+DB_PASSWORD=your_mysql_password
+```
+
+### 5. Generate Application Key
+
+```bash
+php artisan key:generate
+```
+
+### 6. Database Setup
+
+#### Option A: Using Laravel Migrations (Recommended)
+
+```bash
+# Create the database first in MySQL
+mysql -u root -p -e "CREATE DATABASE pharmacy_management CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;"
+
+# Run migrations
+php artisan migrate
+
+# Seed the database with sample data
+php artisan db:seed
+```
+
+#### Option B: Using SQL Files
+
+If you prefer to use raw SQL files:
+
+```bash
+# Create database
+mysql -u root -p < database/migrations/sql/create_database.sql
+
+# Create tables
+mysql -u root -p pharmacy_management < database/migrations/sql/tables.sql
+
+# Insert sample data
+mysql -u root -p pharmacy_management < database/migrations/sql/sample_data.sql
+
+# Create indexes for performance
+mysql -u root -p pharmacy_management < database/migrations/sql/indexes.sql
+```
+
+### 7. Storage Linking
+
+Create a symbolic link for file storage:
+
+```bash
+php artisan storage:link
+```
+
+### 8. Build Frontend Assets
+
+```bash
+npm run build
+```
+
+For development with hot-reload:
+
+```bash
+npm run dev
+```
+
+### 9. Run the Application
+
+Start the Laravel development server:
+
+```bash
+php artisan serve
+```
+
+The application will be available at: `http://localhost:8000`
+
+## Default Login Credentials
+
+After seeding the database, you can login with these default credentials:
+
+**Admin Account:**
+- Email: `admin@example.com`
+- Password: `admin123`
+
+**Pharmacist Account:**
+- Email: `pharmacist@example.com`
+- Password: `pharmacist123`
+
+⚠️ **Important**: Change these default passwords immediately after first login in production!
+
+## Project Structure
+
+```
+pharmacy_management/
+├── app/
+│   ├── Http/
+│   │   └── Controllers/     # Application controllers
+│   ├── Models/              # Eloquent models
+│   └── helpers.php          # Helper functions
+├── database/
+│   ├── factories/           # Model factories for testing
+│   ├── migrations/          # Database migrations
+│   │   └── sql/            # SQL scripts (alternative setup)
+│   └── seeders/            # Database seeders
+├── public/                  # Public assets
+├── resources/
+│   ├── views/              # Blade templates
+│   └── js/                 # JavaScript files
+├── routes/
+│   └── web.php             # Web routes
+├── storage/                # Application storage
+└── tests/                  # Application tests
+```
+
+## Database Schema
+
+The application uses the following main tables:
+
+- **users**: System users with role-based access
+- **categories**: Medicine categories
+- **suppliers**: Supplier information
+- **medicines**: Medicine inventory with detailed information
+- **customers**: Customer records and medical history
+- **sales**: Sales transaction headers
+- **sale_details**: Individual sale line items
+- **restocks**: Inventory restocking history
+
+For detailed schema information, see `database/migrations/sql/tables.sql`
+
+## Usage Guide
+
+### Managing Medicines
+
+1. Navigate to **Medicines** from the dashboard
+2. Click **Add Medicine** to create a new entry
+3. Fill in medicine details including name, category, supplier, stock, and expiry date
+4. Set minimum stock levels for automatic low-stock alerts
+5. Mark if prescription is required
+
+### Processing Sales
+
+1. Go to **Cashier** or **Sales** section
+2. Select customer (or create new)
+3. Add medicines to cart
+4. Process payment and generate invoice
+5. Print or download receipt
+
+### Managing Inventory
+
+1. View current stock levels in **Medicines**
+2. Check low stock alerts on dashboard
+3. Record restocks in **Inventory** section
+4. Monitor expiring medicines
+
+### Generating Reports
+
+1. Access **Reports** from the menu
+2. Select report type (Sales, Inventory, etc.)
+3. Set date range and filters
+4. Export to PDF or Excel
+
+## Development
+
+### Running Tests
+
+```bash
+php artisan test
+```
+
+### Code Style
+
+This project follows Laravel coding standards. Run PHP CS Fixer:
+
+```bash
+./vendor/bin/pint
+```
+
+### Debug Mode
+
+For development, enable debug mode in `.env`:
+
+```env
+APP_DEBUG=true
+```
+
+**Never enable debug mode in production!**
+
+## Maintenance
+
+### Database Backup
+
+Regular backups are recommended:
+
+```bash
+mysqldump -u username -p pharmacy_management > backup_$(date +%Y%m%d).sql
+```
+
+### Clearing Cache
+
+```bash
+php artisan cache:clear
+php artisan config:clear
+php artisan route:clear
+php artisan view:clear
+```
+
+### Optimizing for Production
+
+```bash
+php artisan config:cache
+php artisan route:cache
+php artisan view:cache
+composer install --optimize-autoloader --no-dev
+```
+
+## Technologies Used
+
+- **Backend**: Laravel 11.9 (PHP 8.2)
+- **Frontend**: Blade Templates, Tailwind CSS, Alpine.js
+- **Database**: MySQL 5.7+
+- **Authentication**: Laravel Breeze
+- **PDF Generation**: DomPDF
+- **Excel Export**: Maatwebsite Excel
+- **Build Tools**: Vite
 
 ## Contributing
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+Contributions are welcome! Please follow these steps:
 
-## Code of Conduct
+1. Fork the repository
+2. Create a feature branch (`git checkout -b feature/AmazingFeature`)
+3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
+4. Push to the branch (`git push origin feature/AmazingFeature`)
+5. Open a Pull Request
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+Please ensure your code follows the project's coding standards and includes appropriate tests.
 
-## Security Vulnerabilities
+## Security
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+If you discover any security vulnerabilities, please email the maintainers directly instead of using the issue tracker. All security vulnerabilities will be promptly addressed.
 
 ## License
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+This project is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+
+## Support
+
+For support, questions, or feature requests:
+- Open an issue on GitHub
+- Contact the development team
+- Check the documentation
+
+## Acknowledgments
+
+- Built with [Laravel](https://laravel.com)
+- Icons by [Heroicons](https://heroicons.com)
+- UI components from [Tailwind CSS](https://tailwindcss.com)
+
+---
+
+**© 2025 Pharmacy Management System. All rights reserved.**
